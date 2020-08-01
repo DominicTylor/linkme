@@ -1,7 +1,7 @@
 import { verifyIdToken } from '../../utils/auth/firebaseAdmin';
 const favoriteFoods = ['pizza', 'burger', 'chips', 'tortilla'];
 
-const getFood = async (req, res) => {
+const getFood = async (req: any, res: any) => {
     const token = req.headers.token;
 
     try {
