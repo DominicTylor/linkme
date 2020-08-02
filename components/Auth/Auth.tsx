@@ -1,19 +1,37 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Link from 'next/link';
+import { OverflowMenu } from 'precise-ui';
 
-import { AvatarStyled, ButtonStyled } from './Auth.styled';
+import { UserContext } from '../../contexts';
+
+import { AvatarStyled, ButtonStyled, MenuItem } from './Auth.styled';
 
 const Header: React.FC = () => {
-    const [user, setUser] = useState(null);
+    const { user, showAuth, logout } = useContext(UserContext);
 
     return user ? (
-        <Link href="/test">
-            <AvatarStyled>US</AvatarStyled>
-        </Link>
+        <OverflowMenu
+            {...{
+                button: <AvatarStyled>US</AvatarStyled>,
+                items: [
+                    <Link key="personal" href="/personal">
+                        <MenuItem>Personal page</MenuItem>
+                    </Link>,
+                    <MenuItem key="logout" onClick={logout}>
+                        Logout
+                    </MenuItem>,
+                ],
+                flyoutProps: {
+                    position: 'bottom-right',
+                },
+            }}
+        />
     ) : (
         <div>
             <ButtonStyled>Sign up</ButtonStyled>
-            <ButtonStyled buttonStyle="secondary">Sign in</ButtonStyled>
+            <ButtonStyled buttonStyle="secondary" onClick={showAuth}>
+                Sign in
+            </ButtonStyled>
         </div>
     );
 };

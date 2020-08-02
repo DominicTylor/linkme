@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Year, Author, FooterStyled } from './Footer.styled';
 
-const Footer: React.FC = () => (
-    <FooterStyled>
-        <Author>Dominic Tylor</Author>
-        <Year>{new Date().getFullYear()}</Year>
-    </FooterStyled>
-);
+const Footer: React.FC = () => {
+    const [s] = useState(() => console.log('aaa'));
 
-export default React.memo(Footer);
+    return (
+        <FooterStyled>
+            <Author>Dominic Tylor</Author>
+            <Year>
+                {new Date().getFullYear()} {s}
+            </Year>
+        </FooterStyled>
+    );
+};
+
+export default Footer;

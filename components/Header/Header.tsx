@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { Auth } from '..';
 
-import { HeaderType } from './Header.type';
+import { HeaderType } from './types';
 import { Logo, HeaderStyled } from './Header.styled';
 
 const Header: React.FC<HeaderType> = ({ className }) => (

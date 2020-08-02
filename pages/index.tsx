@@ -1,56 +1,21 @@
-import React from 'react';
-import useSWR from 'swr';
-import Link from 'next/link';
-import { useUser } from '../utils/auth/useUser';
+import React, { useContext } from 'react';
+import { ActionLink } from 'precise-ui';
 
-const fetcher = (url, token) =>
-    fetch(url, {
-        method: 'GET',
-        headers: new Headers({ 'Content-Type': 'application/json', token }),
-        credentials: 'same-origin',
-    }).then((res) => res.json());
+import { UserContext } from '../contexts';
 
-const Index = () => {
-    const { user, logout } = useUser();
-    const { data, error } = useSWR(user ? ['/api/getFood', user.token] : null, fetcher);
-    if (!user) {
-        return (
-            <>
-                <p>Hi there!</p>
-                <p>
-                    You are not signed in.{' '}
-                    <Link href={'/auth'}>
-                        <a>Sign in</a>
-                    </Link>
-                </p>
-            </>
-        );
+const Index: React.FC = () => {
+    const { user, showAuth } = useContext(UserContext);
+
+    if (user) {
+        return <div>You login</div>;
     }
 
     return (
-        <div>
+        <>
             <div>
-                <p>You&apos;re signed in. Email: {user.email}</p>
-                <p
-                    style={{
-                        display: 'inline-block',
-                        color: 'blue',
-                        textDecoration: 'underline',
-                        cursor: 'pointer',
-                    }}
-                    onClick={() => logout()}
-                >
-                    Log out
-                </p>
+                For full access to app you should <ActionLink onClick={showAuth}>Click me</ActionLink>
             </div>
-            <div>
-                <Link href={'/example'}>
-                    <a>Another example page</a>
-                </Link>
-            </div>
-            {error && <div>Failed to fetch food!</div>}
-            {data ? <div>Your favorite food is {data.food}.</div> : <div>Loading...</div>}
-        </div>
+        </>
     );
 };
 

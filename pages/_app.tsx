@@ -4,6 +4,8 @@ import type { AppProps } from 'next/app';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 
 import { theme } from '../theme';
+import { Layout } from '../layouts';
+import { UserContextProvider } from '../contexts';
 
 const GlobalStyles = createGlobalStyle`
     ${reset};
@@ -19,8 +21,12 @@ const GlobalStyles = createGlobalStyle`
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => (
     <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        <Component {...pageProps} />
+        <UserContextProvider>
+            <GlobalStyles />
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </UserContextProvider>
     </ThemeProvider>
 );
 

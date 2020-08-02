@@ -1,12 +1,7 @@
 import React from 'react';
 
-import { Layout } from '../layouts';
 import { Information } from '../components';
 
-const About: React.FC = () => (
-    <Layout>
-        <Information />
-    </Layout>
-);
+const About: React.FC = () => <Information />;
 
 export default About;
