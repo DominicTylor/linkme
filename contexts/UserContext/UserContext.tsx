@@ -1,85 +1,124 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
-import 'firebase/auth';
-import cookie from 'js-cookie';
-import firebase from 'firebase/app';
-import firebaseui from 'firebaseui';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
-import initFirebase from '../../utils/auth/initFirebase';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
 
 import { User, UserContextType } from './types';
 
-initFirebase();
+const config = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
+
+if (typeof window !== 'undefined' && !firebase.apps.length) {
+    firebase.initializeApp(config);
+}
 
 export const UserContext = createContext<UserContextType>({
     user: null,
-    showAuth: () => null,
+    showSignIn: () => null,
+    showSignUp: () => null,
     logout: async () => null,
 });
 
+const firebaseAuth = firebase.auth();
+
 export const UserContextProvider: React.FC = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [renderAuth, setRenderAuth] = useState<boolean>(false);
+    const [user, setUser] = useState<User>(null);
+    const [renderSignIn, setRenderSignIn] = useState<boolean>(false);
+    const [renderSignUp, setRenderSignUp] = useState<boolean>(false);
 
-    const firebaseAuthConfig: firebaseui.auth.Config = {
-        signInFlow: 'popup',
-        signInOptions: [
-            {
-                provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                requireDisplayName: false,
-            },
-        ],
-        credentialHelper: 'none',
-        callbacks: {
-            signInSuccessWithAuthResult: ({ user }) => {
-                const { uid, email, xa } = user;
-                const userData = {
-                    id: uid,
-                    email,
-                    token: xa,
-                    name: 'V',
-                    surname: 'P',
-                };
-                cookie.set('auth', userData, {
-                    expires: 1,
-                });
-                setUser(userData);
-
-                return true;
-            },
-        },
-    };
-
-    const showAuth = useCallback(() => {
-        setRenderAuth(true);
+    const showSignIn = useCallback(() => {
+        setRenderSignIn(true);
     }, []);
 
-    const logout = useCallback(async () => {
-        return firebase
-            .auth()
-            .signOut()
-            .then(() => {
-                cookie.remove('auth');
-                setUser(null);
-            })
-            .catch((e) => {
-                console.error(e);
-            });
+    const showSignUp = useCallback(() => {
+        setRenderSignUp(true);
     }, []);
+
+    const logout = useCallback(
+        async () =>
+            firebaseAuth
+                .signOut()
+                .then(() => {
+                    setUser(null);
+                })
+                .catch((e) => {
+                    console.error(e);
+                }),
+        [],
+    );
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const cookieAuth = cookie.get('auth');
+            const user = firebase.auth().currentUser;
 
-            if (cookieAuth) {
-                setUser(JSON.parse(cookieAuth));
+            if (user) {
+                const { uid, email, displayName } = user;
+
+                setUser({
+                    id: uid,
+                    email,
+                    name: displayName,
+                });
             }
         }
     }, []);
 
+    const signUp = useCallback(async (email: string, password: string) => {
+        try {
+            const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+
+            if (user?.user) {
+                const { uid, email, displayName } = user.user;
+
+                setUser({
+                    id: uid,
+                    email,
+                    name: displayName,
+                });
+
+                return true;
+            }
+
+            throw new Error('Login error');
+        } catch (error) {
+            return false;
+        }
+    }, []);
+
+    const signIn = useCallback(async (email: string, password: string) => {
+        try {
+            const user = await firebaseAuth.signInWithEmailAndPassword(email, password);
+
+            if (user?.user) {
+                const { uid, email, displayName } = user.user;
+
+                setUser({
+                    id: uid,
+                    email,
+                    name: displayName,
+                });
+
+                return true;
+            }
+
+            throw new Error('Login error');
+        } catch (error) {
+            return false;
+        }
+    }, []);
+
     return (
-        <UserContext.Provider value={{ user, showAuth, logout }}>
-            {renderAuth && <StyledFirebaseAuth uiConfig={firebaseAuthConfig} firebaseAuth={firebase.auth()} />}
+        <UserContext.Provider value={{ user, showSignIn, showSignUp, logout }}>
+            {/*{renderSignIn && <SignInModal signIn />}
+            {renderSignUp && <SignUpModal signUp />}*/}
             {children}
         </UserContext.Provider>
     );

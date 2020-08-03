@@ -1,13 +1,12 @@
 export type User = {
     id: string;
-    name: string;
-    surname: string;
-    email: string;
-    token: string;
+    name: string | null;
+    email: string | null;
 } | null;
 
 export type UserContextType = {
     user: User;
-    showAuth: () => void;
+    showSignIn: () => void;
+    showSignUp: () => void;
     logout: () => void;
 };
