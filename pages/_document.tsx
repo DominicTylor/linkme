@@ -4,7 +4,7 @@ import { ServerStyleSheet } from 'styled-components';
 import { DocumentInitialProps } from 'next/dist/next-server/lib/utils';
 
 // precise-ui not support SSR correct, it's workaround to fix it
-import '../utils/precise-ssr-utils';
+import '../helpers/precise-ssr-utils';
 
 export default class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {

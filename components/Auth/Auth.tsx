@@ -7,7 +7,7 @@ import { UserContext } from '../../contexts';
 import { AvatarStyled, ButtonStyled, MenuItem } from './Auth.styled';
 
 const Header: React.FC = () => {
-    const { user, showAuth, logout } = useContext(UserContext);
+    const { user, showSignIn, showSignUp, logout } = useContext(UserContext);
 
     return user ? (
         <OverflowMenu
@@ -28,8 +28,8 @@ const Header: React.FC = () => {
         />
     ) : (
         <div>
-            <ButtonStyled>Sign up</ButtonStyled>
-            <ButtonStyled buttonStyle="secondary" onClick={showAuth}>
+            <ButtonStyled onClick={showSignUp}>Sign up</ButtonStyled>
+            <ButtonStyled buttonStyle="secondary" onClick={showSignIn}>
                 Sign in
             </ButtonStyled>
         </div>

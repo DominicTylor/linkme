@@ -1,4 +1,4 @@
-import { verifyIdToken } from '../../utils/auth/firebaseAdmin';
+import { verifyIdToken } from '../../helpers/auth/firebaseAdmin';
 const favoriteFoods = ['pizza', 'burger', 'chips', 'tortilla'];
 
 const getFood = async (req: any, res: any) => {

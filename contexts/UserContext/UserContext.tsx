@@ -6,6 +6,7 @@ import 'firebase/database';
 
 import { User, UserContextType } from './types';
 import { SignInModal } from '../../components';
+import { parseError } from '../../helpers/parseError';
 
 const config = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY,
@@ -17,7 +18,7 @@ const config = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-if (typeof window !== 'undefined' && !firebase.apps.length) {
+if (!firebase.apps.length) {
     firebase.initializeApp(config);
 }
 
@@ -41,7 +42,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
         setRenderSignIn(true);
     }, []);
     const hideSignIn = useCallback(() => {
-        setRenderSignIn(true);
+        setRenderSignIn(false);
         setModalError('');
     }, []);
 
@@ -49,7 +50,8 @@ export const UserContextProvider: React.FC = ({ children }) => {
         setRenderSignUp(true);
     }, []);
     const hideSignUp = useCallback(() => {
-        setRenderSignUp(true);
+        setRenderSignUp(false);
+        setModalError('');
     }, []);
 
     const logout = useCallback(
@@ -67,7 +69,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const user = firebase.auth().currentUser;
+            const user = firebaseAuth.currentUser;
 
             if (user) {
                 const { uid, email, displayName } = user;
@@ -97,11 +99,13 @@ export const UserContextProvider: React.FC = ({ children }) => {
                 });
 
                 hideSignIn();
+
+                return true;
             }
 
-            throw new Error('Login error');
+            throw 'Sign In error';
         } catch (error) {
-            setModalError(error);
+            setModalError(parseError(error));
         } finally {
             setModalInProgress(false);
         }
@@ -114,20 +118,22 @@ export const UserContextProvider: React.FC = ({ children }) => {
             const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
 
             if (user?.user) {
-                const { uid, email, displayName } = user.user;
+                const { uid, email: userEmail, displayName } = user.user;
 
                 setUser({
                     id: uid,
-                    email,
+                    email: userEmail,
                     name: displayName,
                 });
+
+                hideSignUp();
 
                 return true;
             }
 
-            throw new Error('Login error');
+            throw 'Sign Up error';
         } catch (error) {
-            setModalError(error);
+            setModalError(parseError(error));
         } finally {
             setModalInProgress(false);
         }
