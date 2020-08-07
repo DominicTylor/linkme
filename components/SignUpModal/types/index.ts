@@ -1,11 +1,11 @@
 import { User, FirebaseAuth } from '../../../contexts/UserContext/types';
 
-export type SignInFieldsData = {
+export type SignUpFieldsData = {
     email: string;
     password: string;
 };
 
-export type SignInModalType = {
+export type SignUpModalType = {
     isOpen: boolean;
     firebaseAuth: FirebaseAuth;
     closeHandler: () => void;

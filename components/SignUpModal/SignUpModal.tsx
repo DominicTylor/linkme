@@ -2,9 +2,9 @@ import React, { useCallback, useMemo } from 'react';
 
 import { ActionModal, ActionModalField, ActionModalFieldType } from '../';
 
-import { SignInFieldsData, SignInModalType } from './types';
+import { SignUpModalType, SignUpFieldsData } from './types';
 
-const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
+const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
     const fields = useMemo<ActionModalField[]>(
         () => [
             {
@@ -37,31 +37,29 @@ const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth,
         [],
     );
 
-    const actionHandler = useCallback(async ({ email, password }) => {
+    const actionHandler = useCallback(async ({ email, password }: SignUpFieldsData) => {
         if (firebaseAuth) {
-            const user = await firebaseAuth.signInWithEmailAndPassword(email, password);
+            const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
 
             if (user?.user) {
-                const { uid, email, displayName } = user.user;
+                const { uid, email: userEmail, displayName } = user.user;
 
                 setUser({
                     id: uid,
-                    email,
+                    email: userEmail,
                     name: displayName,
                 });
-
-                closeHandler();
             } else {
-                throw 'Sign In error';
+                throw 'Sign Up error';
             }
         }
     }, []);
 
     return (
-        <ActionModal<SignInFieldsData>
-            {...{ isOpen, title: 'Sign In', label: 'welcome back', closeHandler, actionHandler, fields }}
+        <ActionModal<SignUpFieldsData>
+            {...{ isOpen, title: 'Sign Up', label: 'welcome', closeHandler, actionHandler, fields }}
         />
     );
 };
 
-export default SignInModal;
+export default SignUpModal;

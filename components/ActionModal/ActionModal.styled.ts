@@ -10,7 +10,11 @@ export const StyledSpinner = styled(Spinner)`
     z-index: 1;
 `;
 
-export const ModalContentWrapper = styled.div<{
+export const FieldWrapper = styled.div`
+    padding-bottom: 10px;
+`;
+
+export const Form = styled.form<{
     inProgress: boolean;
 }>`
     ${StyledSpinner} {

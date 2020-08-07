@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import Link from 'next/link';
 import { OverflowMenu } from 'precise-ui';
 
@@ -6,8 +6,21 @@ import { UserContext } from '../../contexts';
 
 import { AvatarStyled, ButtonStyled, MenuItem } from './Auth.styled';
 
-const Header: React.FC = () => {
-    const { user, showSignIn, showSignUp, logout } = useContext(UserContext);
+const Auth: React.FC = () => {
+    const { user, showSignIn, showSignUp, setUser, firebaseAuth } = useContext(UserContext);
+
+    const logout = useCallback(() => {
+        if (firebaseAuth) {
+            firebaseAuth
+                .signOut()
+                .then(() => {
+                    setUser(null);
+                })
+                .catch((e) => {
+                    window.console.error(e);
+                });
+        }
+    }, []);
 
     return user ? (
         <OverflowMenu
@@ -36,4 +49,4 @@ const Header: React.FC = () => {
     );
 };
 
-export default Header;
+export default Auth;

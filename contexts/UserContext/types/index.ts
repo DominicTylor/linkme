@@ -1,3 +1,7 @@
+import firebase from '@firebase/app';
+
+export type FirebaseAuth = firebase.auth.Auth | null;
+
 export type User = {
     id: string;
     name: string | null;
@@ -8,5 +12,6 @@ export type UserContextType = {
     user: User;
     showSignIn: () => void;
     showSignUp: () => void;
-    logout: () => void;
+    setUser: (user: User) => void;
+    firebaseAuth: FirebaseAuth;
 };
