@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, TextField } from 'precise-ui';
 
 import { parseError } from '../../helpers/parseError';
@@ -20,9 +20,9 @@ const ActionModal = <T extends Record<string, string>>({
     const [inProgress, setInProgress] = useState<boolean>(false);
     const [actionError, setActionError] = useState<string>('');
 
-    const { register, errors, handleSubmit } = useForm();
+    const { register, errors, handleSubmit } = useForm<T>();
 
-    const onSubmit = async (data: any) => {
+    const onSubmit: SubmitHandler<T> = async (data) => {
         setInProgress(true);
 
         try {
@@ -75,7 +75,7 @@ const ActionModal = <T extends Record<string, string>>({
                                                 name,
                                                 label,
                                                 type,
-                                                error: errors[name]?.message,
+                                                error: parseError(errors[name]),
                                                 inputRef: register<HTMLInputElement>(rules),
                                                 autoFocus: index === 0,
                                             }}

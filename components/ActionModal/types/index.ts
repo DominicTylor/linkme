@@ -1,4 +1,4 @@
-import { ValidationRules } from 'react-hook-form';
+import { SubmitHandler, ValidationRules } from 'react-hook-form';
 
 export enum ActionModalFieldType {
     'text' = 'text',
@@ -20,5 +20,5 @@ export type ActionModalType<T> = {
     cancelText?: string;
     fields: ActionModalField[];
     closeHandler: () => void;
-    actionHandler: (data: T) => Promise<void>;
+    actionHandler: SubmitHandler<T>;
 };
