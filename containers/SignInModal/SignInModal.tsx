@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { ActionModal, ActionModalField, ActionModalFieldType } from '../';
+import { ActionModal, ActionModalField, ActionModalFieldType } from '../../components';
 
-import { SignUpModalType, SignUpFieldsData } from './types';
+import { SignInFieldsData, SignInModalType } from './types';
 
-const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
+const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
     const fields = useMemo<ActionModalField[]>(
         () => [
             {
@@ -37,29 +37,33 @@ const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth,
         [],
     );
 
-    const actionHandler = useCallback(async ({ email, password }: SignUpFieldsData) => {
+    const actionHandler = useCallback(async ({ email, password }) => {
         if (firebaseAuth) {
-            const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+            const user = await firebaseAuth.signInWithEmailAndPassword(email, password);
 
             if (user?.user) {
-                const { uid, email: userEmail, displayName } = user.user;
+                const { uid, email: userEmail, photoURL, displayName, emailVerified } = user.user;
 
                 setUser({
                     id: uid,
+                    photoURL,
+                    emailVerified,
                     email: userEmail,
                     name: displayName,
                 });
+
+                closeHandler();
             } else {
-                throw 'Sign Up error';
+                throw 'Sign In error';
             }
         }
     }, []);
 
     return (
-        <ActionModal<SignUpFieldsData>
-            {...{ isOpen, title: 'Sign Up', label: 'welcome', closeHandler, actionHandler, fields }}
+        <ActionModal<SignInFieldsData>
+            {...{ isOpen, title: 'Sign In', label: 'welcome back', closeHandler, actionHandler, fields }}
         />
     );
 };
 
-export default SignUpModal;
+export default SignInModal;

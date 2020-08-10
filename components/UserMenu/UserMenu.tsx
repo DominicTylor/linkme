@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { OverflowMenu } from 'precise-ui';
 
 import { UserContext } from '../../contexts';
-import { ACCOUNT } from '../../constants/paths';
+import { ACCOUNT, MY_LINKS } from '../../constants/paths';
 
 import { AvatarStyled, ButtonStyled, MenuItem } from './UserMenu.styled';
 
@@ -28,6 +28,9 @@ const UserMenu: React.FC = () => {
             {...{
                 button: <AvatarStyled>US</AvatarStyled>,
                 items: [
+                    <Link key="account" href={MY_LINKS}>
+                        <MenuItem>My links</MenuItem>
+                    </Link>,
                     <Link key="account" href={ACCOUNT}>
                         <MenuItem>Account</MenuItem>
                     </Link>,

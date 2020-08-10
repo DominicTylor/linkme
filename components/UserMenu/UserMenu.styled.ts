@@ -12,6 +12,7 @@ export const AvatarStyled = styled.div`
     text-align: center;
     font-size: 18px;
     font-weight: 500;
+    cursor: pointer;
 `;
 
 export const MenuItem = styled.div`

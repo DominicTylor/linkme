@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 
-import { SignInModal, SignUpModal } from '../../components';
+import { SignInModal, SignUpModal } from '../../containers';
 
 import { User, FirebaseAuth, UserContextType } from './types';
 
