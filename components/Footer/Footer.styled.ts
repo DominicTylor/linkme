@@ -1,13 +1,22 @@
 import styled from 'styled-components';
 
-export const Author = styled.div`
+export const StyledLink = styled.a`
     font-size: 12px;
     font-style: italic;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:active {
+        text-decoration: underline;
+    }
 `;
 
-export const Year = styled.div`
+export const Year = styled.span`
     font-size: 12px;
     font-style: italic;
+    margin-right: 10px;
 `;
 
 export const FooterStyled = styled.footer`

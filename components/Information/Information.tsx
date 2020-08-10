@@ -19,7 +19,7 @@ const Information: React.FC = () => {
                         frameBorder="0"
                         width="800"
                         height="460"
-                    ></iframe>
+                    />
                 ) : (
                     <Icon name="Info" onClick={() => setShowGame(true)} />
                 )}

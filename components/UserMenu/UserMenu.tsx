@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { OverflowMenu } from 'precise-ui';
 
 import { UserContext } from '../../contexts';
+import { ACCOUNT } from '../../constants/paths';
 
-import { AvatarStyled, ButtonStyled, MenuItem } from './Auth.styled';
+import { AvatarStyled, ButtonStyled, MenuItem } from './UserMenu.styled';
 
-const Auth: React.FC = () => {
+const UserMenu: React.FC = () => {
     const { user, showSignIn, showSignUp, setUser, firebaseAuth } = useContext(UserContext);
 
     const logout = useCallback(() => {
@@ -27,8 +28,8 @@ const Auth: React.FC = () => {
             {...{
                 button: <AvatarStyled>US</AvatarStyled>,
                 items: [
-                    <Link key="personal" href="/personal">
-                        <MenuItem>Personal page</MenuItem>
+                    <Link key="account" href={ACCOUNT}>
+                        <MenuItem>Account</MenuItem>
                     </Link>,
                     <MenuItem key="logout" onClick={logout}>
                         Logout
@@ -49,4 +50,4 @@ const Auth: React.FC = () => {
     );
 };
 
-export default Auth;
+export default UserMenu;

@@ -7,5 +7,5 @@ export const parseError = (error: unknown): string => {
         return error.message;
     }
 
-    return 'Unknown error';
+    return '';
 };

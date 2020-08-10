@@ -1,22 +1,16 @@
 import React, { useContext } from 'react';
-import { ActionLink } from 'precise-ui';
 
 import { UserContext } from '../contexts';
+import { Welcome } from '../components';
 
 const Index: React.FC = () => {
-    const { user, showAuth } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     if (user) {
-        return <div>You login</div>;
+        return <div style={{ marginTop: '100px', textAlign: 'center' }}>You login</div>;
     }
 
-    return (
-        <>
-            <div>
-                For full access to app you should <ActionLink onClick={showAuth}>Click me</ActionLink>
-            </div>
-        </>
-    );
+    return <Welcome />;
 };
 
 export default Index;
