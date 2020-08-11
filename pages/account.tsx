@@ -1,21 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
+import { HOME } from '../constants/paths';
 import { UserContext } from '../contexts';
 import { UserDetails } from '../containers';
-import { HOME } from '../constants/paths';
 
 const Account: React.FC = () => {
     const { push } = useRouter();
     const { user } = useContext(UserContext);
 
-    if (!user) {
-        push(HOME);
+    useEffect(() => {
+        if (!user) {
+            push(HOME);
+        }
+    }, [user]);
 
-        return null;
-    }
-
-    return <UserDetails />;
+    return user && <UserDetails />;
 };
 
 export default Account;

@@ -7,7 +7,6 @@ export type User = {
     name: string | null;
     email: string | null;
     emailVerified: boolean;
-    photoURL: string | null;
 } | null;
 
 export type UserContextType = {

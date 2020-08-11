@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
+import { normalizeUser } from '../../services/normalization';
 import { ActionModal, ActionModalField, ActionModalFieldType } from '../../components';
 
 import { SignInFieldsData, SignInModalType } from './types';
@@ -31,6 +32,14 @@ const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth,
                         value: true,
                         message: 'This is required filed',
                     },
+                    minLength: {
+                        value: 8,
+                        message: 'Your password too short',
+                    },
+                    maxLength: {
+                        value: 42,
+                        message: 'Your password too long',
+                    },
                 },
             },
         ],
@@ -42,15 +51,7 @@ const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth,
             const user = await firebaseAuth.signInWithEmailAndPassword(email, password);
 
             if (user?.user) {
-                const { uid, email: userEmail, photoURL, displayName, emailVerified } = user.user;
-
-                setUser({
-                    id: uid,
-                    photoURL,
-                    emailVerified,
-                    email: userEmail,
-                    name: displayName,
-                });
+                setUser(normalizeUser(user.user));
 
                 closeHandler();
             } else {

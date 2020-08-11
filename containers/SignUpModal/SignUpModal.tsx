@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
+import { normalizeUser } from '../../services/normalization';
 import { ActionModal, ActionModalField, ActionModalFieldType } from '../../components';
 
 import { SignUpModalType, SignUpFieldsData } from './types';
@@ -31,6 +32,14 @@ const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth,
                         value: true,
                         message: 'This is required filed',
                     },
+                    minLength: {
+                        value: 8,
+                        message: 'Your password too short',
+                    },
+                    maxLength: {
+                        value: 42,
+                        message: 'Your password too long',
+                    },
                 },
             },
         ],
@@ -42,15 +51,9 @@ const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth,
             const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
 
             if (user?.user) {
-                const { uid, email: userEmail, photoURL, displayName, emailVerified } = user.user;
+                setUser(normalizeUser(user.user));
 
-                setUser({
-                    id: uid,
-                    photoURL,
-                    emailVerified,
-                    email: userEmail,
-                    name: displayName,
-                });
+                closeHandler();
             } else {
                 throw 'Sign Up error';
             }

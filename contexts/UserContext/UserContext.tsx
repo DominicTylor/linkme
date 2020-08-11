@@ -4,6 +4,7 @@ import 'firebase/auth';
 import 'firebase/database';
 
 import { SignInModal, SignUpModal } from '../../containers';
+import { normalizeUser } from '../../services/normalization';
 
 import { User, FirebaseAuth, UserContextType } from './types';
 
@@ -55,13 +56,7 @@ export const UserContextProvider: React.FC = ({ children }) => {
             const user = firebaseAuth.currentUser;
 
             if (user) {
-                const { uid, email, displayName } = user;
-
-                setUser({
-                    id: uid,
-                    email,
-                    name: displayName,
-                });
+                setUser(normalizeUser(user));
             }
         }
     }, []);
