@@ -2,11 +2,11 @@ import React, { useContext, useState } from 'react';
 import { TextField } from 'precise-ui';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { UserContext } from '../../contexts';
 import { parseError } from '../../helpers/parseError';
 
 import { UserDetailsFieldsData } from './types';
 import { Form, FieldWrapper, StyledSpinner, SubmitButton } from './UserDetails.styled';
-import { UserContext } from '../../contexts';
 
 const UserDetails: React.FC = () => {
     const { user } = useContext(UserContext);

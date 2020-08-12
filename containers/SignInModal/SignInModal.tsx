@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { normalizeUser } from '../../services/normalization';
+import { signIn } from '../../services/firebase';
 import { ActionModal, ActionModalField, ActionModalFieldType } from '../../components';
 
 import { SignInFieldsData, SignInModalType } from './types';
 
-const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
+const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, closeHandler }) => {
     const fields = useMemo<ActionModalField[]>(
         () => [
             {
@@ -47,17 +47,11 @@ const SignInModal: React.FC<SignInModalType> = ({ isOpen, setUser, firebaseAuth,
     );
 
     const actionHandler = useCallback(async ({ email, password }) => {
-        if (firebaseAuth) {
-            const user = await firebaseAuth.signInWithEmailAndPassword(email, password);
+        const user = await signIn(email, password);
 
-            if (user?.user) {
-                setUser(normalizeUser(user.user));
+        setUser(user);
 
-                closeHandler();
-            } else {
-                throw 'Sign In error';
-            }
-        }
+        closeHandler();
     }, []);
 
     return (

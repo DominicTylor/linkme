@@ -3,24 +3,18 @@ import Link from 'next/link';
 import { OverflowMenu } from 'precise-ui';
 
 import { UserContext } from '../../contexts';
+import { logout } from '../../services/firebase';
 import { ACCOUNT, MY_LINKS } from '../../constants/paths';
 
 import { AvatarStyled, ButtonStyled, MenuItem } from './UserMenu.styled';
 
 const UserMenu: React.FC = () => {
-    const { user, showSignIn, showSignUp, setUser, firebaseAuth } = useContext(UserContext);
+    const { user, showSignIn, showSignUp, setUser } = useContext(UserContext);
 
-    const logout = useCallback(() => {
-        if (firebaseAuth) {
-            firebaseAuth
-                .signOut()
-                .then(() => {
-                    setUser(null);
-                })
-                .catch((e) => {
-                    window.console.error(e);
-                });
-        }
+    const logoutHandler = useCallback(async () => {
+        await logout();
+
+        setUser(null);
     }, []);
 
     return user ? (
@@ -34,7 +28,7 @@ const UserMenu: React.FC = () => {
                     <Link key="account" href={ACCOUNT}>
                         <MenuItem>Account</MenuItem>
                     </Link>,
-                    <MenuItem key="logout" onClick={logout}>
+                    <MenuItem key="logout" onClick={logoutHandler}>
                         Logout
                     </MenuItem>,
                 ],
@@ -45,9 +39,9 @@ const UserMenu: React.FC = () => {
         />
     ) : (
         <div>
-            <ButtonStyled onClick={showSignUp}>Sign up</ButtonStyled>
-            <ButtonStyled buttonStyle="secondary" onClick={showSignIn}>
-                Sign in
+            <ButtonStyled onClick={showSignIn}>Sign in</ButtonStyled>
+            <ButtonStyled buttonStyle="secondary" onClick={showSignUp}>
+                Sign up
             </ButtonStyled>
         </div>
     );

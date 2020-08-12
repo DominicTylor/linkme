@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { normalizeUser } from '../../services/normalization';
+import { signUp } from '../../services/firebase';
 import { ActionModal, ActionModalField, ActionModalFieldType } from '../../components';
 
 import { SignUpModalType, SignUpFieldsData } from './types';
 
-const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth, closeHandler }) => {
+const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, closeHandler }) => {
     const fields = useMemo<ActionModalField[]>(
         () => [
             {
@@ -47,17 +47,11 @@ const SignUpModal: React.FC<SignUpModalType> = ({ isOpen, setUser, firebaseAuth,
     );
 
     const actionHandler = useCallback(async ({ email, password }: SignUpFieldsData) => {
-        if (firebaseAuth) {
-            const user = await firebaseAuth.createUserWithEmailAndPassword(email, password);
+        const user = await signUp(email, password);
 
-            if (user?.user) {
-                setUser(normalizeUser(user.user));
+        setUser(user);
 
-                closeHandler();
-            } else {
-                throw 'Sign Up error';
-            }
-        }
+        closeHandler();
     }, []);
 
     return (
